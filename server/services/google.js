@@ -68,16 +68,16 @@ module.exports = ({ strapi }) => ({
           return reject({ error: true, message: "Invalid/missing scopes" })
         }
         let scopesObject = JSON.parse(scopesData);
+        let scopesObject = null                                                                    
+        try {
+            scopesObject = JSON.parse(scopesData);
+        } catch(e) {
+            console.log(e)
+        }
+        scopesObject = !scopesObject ? scopesData : scopesObject;
         let scopes = scopesObject.scopes;
 
         if (!scopes || !scopes.length) {
-          return reject({ error: true, message: "Invalid/missing scopes" })
-        }
-
-        const { google_client_id, google_client_secret, google_redirect_url, google_scopes } = credentials;
-        if (!google_client_id || !google_client_secret || !google_redirect_url || !google_scopes) {
-          return reject({ error: true, message: "Missing credentials" });
-        }
 
         const auth = this.createConnection(google_client_id, google_client_secret, google_redirect_url);
         const connectonURL = this.getConnectionUrl(auth, scopes);
